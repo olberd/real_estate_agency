@@ -1,6 +1,7 @@
 from django.contrib import admin
+from django.contrib.auth.models import User
 
-from .models import Flat
+from .models import Flat, Claim
 
 
 class FlatAdmin(admin.ModelAdmin):
@@ -12,3 +13,13 @@ class FlatAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Flat, FlatAdmin)
+
+
+class ClaimAdmin(admin.ModelAdmin):
+    fields = ('user', 'flat', 'text')
+    raw_id_fields = ('user', 'flat', )
+    list_display = ('user', 'flat', 'text')
+
+
+admin.site.register(Claim, ClaimAdmin)
+

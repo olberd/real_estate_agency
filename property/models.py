@@ -1,6 +1,10 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
+
+User = get_user_model()
 
 class Flat(models.Model):
     owner = models.CharField('ФИО владельца', max_length=200)
@@ -47,6 +51,16 @@ class Flat(models.Model):
         blank=True,
         db_index=True)
     new_building = models.BooleanField(verbose_name='Новостройка', null=True, blank=True)
+    # claim = models.ForeignKey('Claim', on_delete=models.SET_NULL)
 
     def __str__(self):
         return f'{self.town}, {self.address} ({self.price}р.)'
+
+
+class Claim(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    flat = models.ForeignKey('Flat', on_delete=models.DO_NOTHING)
+    text = models.TextField(verbose_name='Текст жалобы')
+
+    def __str__(self):
+        return f'{self.user} {self.flat} {self.text}'
