@@ -1,7 +1,10 @@
 from django.contrib import admin
-from django.contrib.auth.models import User
+from .models import Flat, Claim, Owner
 
-from .models import Flat, Claim
+
+class OwnerInline(admin.TabularInline):
+    model = Owner.flats.through
+    raw_id_fields = ('owner', )
 
 
 class FlatAdmin(admin.ModelAdmin):
@@ -12,6 +15,8 @@ class FlatAdmin(admin.ModelAdmin):
     list_editable = ('new_building', )
     list_filter = ('new_building', 'rooms_number', 'has_balcony', )
     raw_id_fields = ('who_liked', )
+
+    inlines = [OwnerInline]
 
 
 admin.site.register(Flat, FlatAdmin)
@@ -24,4 +29,13 @@ class ClaimAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Claim, ClaimAdmin)
+
+
+class OwnerAdmin(admin.ModelAdmin):
+    raw_id_fields = ('flats',)
+    list_display = ('owner', 'owners_phonenumber', 'owner_pure_phone',)
+
+
+admin.site.register(Owner, OwnerAdmin)
+
 

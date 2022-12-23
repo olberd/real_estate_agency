@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
 
+
 User = get_user_model()
 
 
@@ -66,3 +67,13 @@ class Claim(models.Model):
 
     def __str__(self):
         return f'{self.user} {self.flat} {self.text}'
+
+
+class Owner(models.Model):
+    owner = models.CharField('ФИО владельца', max_length=200, db_index=True)
+    owners_phonenumber = models.CharField('Номер владельца', max_length=20, blank=True, db_index=True)
+    owner_pure_phone = PhoneNumberField('Нормализованный номер владельца', null=True, blank=True, db_index=True)
+    flats = models.ManyToManyField('Flat', verbose_name='Квартиры в собственности', related_name='owners', db_index=True)
+
+    def __str__(self):
+        return f'{self.owner} {self.owner_pure_phone}'
