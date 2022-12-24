@@ -5,13 +5,10 @@ from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
 
 
-User = get_user_model()
+# User = get_user_model()
 
 
 class Flat(models.Model):
-    owner = models.CharField('ФИО владельца', max_length=200)
-    owners_phonenumber = models.CharField('Номер владельца', max_length=20, blank=True)
-    owner_pure_phone = PhoneNumberField('Нормализованный номер владельца', null=True, blank=True)
     created_at = models.DateTimeField(
         'Когда создано объявление',
         default=timezone.now,
@@ -54,15 +51,16 @@ class Flat(models.Model):
         blank=True,
         db_index=True)
     new_building = models.BooleanField(verbose_name='Новостройка', null=True, blank=True)
-    who_liked = models.ManyToManyField(User, verbose_name='Кто лайкнул', blank=True)
+    who_liked = models.ManyToManyField(User, verbose_name='Кто лайкнул', related_name='flat_likes', blank=True)
 
     def __str__(self):
         return f'{self.town}, {self.address} ({self.price}р.)'
 
 
 class Claim(models.Model):
-    user = models.ForeignKey(User, verbose_name='Кто жаловался', on_delete=models.CASCADE)
-    flat = models.ForeignKey('Flat', verbose_name='Квартира на которую пожаловались', on_delete=models.DO_NOTHING)
+    user = models.ForeignKey(User, verbose_name='Кто жаловался', related_name='user_claims', on_delete=models.CASCADE)
+    flat = models.ForeignKey('Flat', verbose_name='Квартира на которую пожаловались', related_name='flat_claims',
+                             on_delete=models.DO_NOTHING)
     text = models.TextField(verbose_name='Текст жалобы')
 
     def __str__(self):
