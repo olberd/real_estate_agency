@@ -5,9 +5,6 @@ from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
 
 
-# User = get_user_model()
-
-
 class Flat(models.Model):
     created_at = models.DateTimeField(
         'Когда создано объявление',
@@ -51,15 +48,15 @@ class Flat(models.Model):
         blank=True,
         db_index=True)
     new_building = models.BooleanField(verbose_name='Новостройка', null=True, blank=True)
-    who_liked = models.ManyToManyField(User, verbose_name='Кто лайкнул', related_name='flat_likes', blank=True)
+    who_liked = models.ManyToManyField(User, verbose_name='Кто лайкнул', related_name='liked_flats', blank=True)
 
     def __str__(self):
         return f'{self.town}, {self.address} ({self.price}р.)'
 
 
 class Claim(models.Model):
-    user = models.ForeignKey(User, verbose_name='Кто жаловался', related_name='user_claims', on_delete=models.CASCADE)
-    flat = models.ForeignKey('Flat', verbose_name='Квартира на которую пожаловались', related_name='flat_claims',
+    user = models.ForeignKey(User, verbose_name='Кто жаловался', related_name='users', on_delete=models.CASCADE)
+    flat = models.ForeignKey('Flat', verbose_name='Квартира на которую пожаловались', related_name='flats',
                              on_delete=models.DO_NOTHING)
     text = models.TextField(verbose_name='Текст жалобы')
 
@@ -68,10 +65,10 @@ class Claim(models.Model):
 
 
 class Owner(models.Model):
-    owner = models.CharField('ФИО владельца', max_length=200, db_index=True)
-    owners_phonenumber = models.CharField('Номер владельца', max_length=20, blank=True, db_index=True)
-    owner_pure_phone = PhoneNumberField('Нормализованный номер владельца', null=True, blank=True, db_index=True)
+    name = models.CharField('ФИО владельца', max_length=200, db_index=True)
+    phone = models.CharField('Номер владельца', max_length=20, blank=True, db_index=True)
+    pure_phone = PhoneNumberField('Нормализованный номер владельца', null=True, blank=True, db_index=True)
     flats = models.ManyToManyField('Flat', verbose_name='Квартиры в собственности', related_name='owners', db_index=True)
 
     def __str__(self):
-        return f'{self.owner} {self.owner_pure_phone}'
+        return f'{self.name} {self.pure_phone}'

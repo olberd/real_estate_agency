@@ -29,6 +29,6 @@ class ClaimAdmin(admin.ModelAdmin):
 @admin.register(Owner)
 class OwnerAdmin(admin.ModelAdmin):
     raw_id_fields = ('flats',)
-    list_display = ('owner', 'owners_phonenumber', 'owner_pure_phone',)
+    list_display = ('name', 'phone', 'pure_phone',)
 
 
