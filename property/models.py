@@ -56,7 +56,7 @@ class Flat(models.Model):
 
 class Claim(models.Model):
     user = models.ForeignKey(User, verbose_name='Кто жаловался', related_name='users', on_delete=models.CASCADE)
-    flat = models.ForeignKey('Flat', verbose_name='Квартира на которую пожаловались', related_name='flats',
+    flat = models.ForeignKey('Flat', verbose_name='Квартира на которую пожаловались', related_name='claims',
                              on_delete=models.DO_NOTHING)
     text = models.TextField(verbose_name='Текст жалобы')
 
